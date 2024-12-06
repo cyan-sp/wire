@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CompanySeeder::class,
             BrandSeeder::class,
+            PlanSeeder::class, // Add the PlanSeeder
         ]);
     }
 }
