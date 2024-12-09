@@ -21,6 +21,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('toast'),
         ]);
 
+        $user = User::factory()->create([
+           'name' => 'clementine',
+           'email' => 'clementine@gmail.com',
+           'password' => Hash::make('toast'),
+        ]);
+
         // Directly create the admin record
         DB::table('admins')->insert([
             'id' => $user->id, // Match the user's ID
