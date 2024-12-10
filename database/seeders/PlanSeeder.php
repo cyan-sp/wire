@@ -14,7 +14,7 @@ class PlanSeeder extends Seeder
     {
         Plan::create([
             'code' => '001',
-            'description' => 'VIP Group',
+            'name' => 'VIP Group',
             'prefix' => '444',
             'status' => true,
             'consecutive_length' => 5,

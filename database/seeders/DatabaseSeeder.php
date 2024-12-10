@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,12 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Call other seeders
+        $this->call([
+            CompanySeeder::class,
+            BrandSeeder::class,
+            PlanSeeder::class, // Add the PlanSeeder
+        ]);
         // Create the user
-        $user = User::factory()->create([
+        // Get the first plan
+        $firstPlan = Plan::first();
+
+        // Create the user 'cyan' and attach the first plan
+        $cyanUser = User::factory()->create([
             'name' => 'cyan',
             'email' => 'cyan.mv@gmail.com',
             'password' => Hash::make('toast'),
         ]);
+
+        // Attach the first plan to the 'cyan' user
+        $cyanUser->plans()->attach($firstPlan->id);
 
         $user = User::factory()->create([
            'name' => 'clementine',
@@ -35,11 +49,6 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Call other seeders
-        $this->call([
-            CompanySeeder::class,
-            BrandSeeder::class,
-            PlanSeeder::class, // Add the PlanSeeder
-        ]);
+
     }
 }

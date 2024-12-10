@@ -11,7 +11,7 @@ class CreatePlansTable extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->string('code', 3); // '001' to '999'
-            $table->string('description');
+            $table->string('name');
             $table->string('prefix', 3); // Similar to 'code'
             $table->boolean('status')->default(true); // Active or inactive status
             $table->unsignedTinyInteger('consecutive_length')->default(5); // Number from 5 to 10

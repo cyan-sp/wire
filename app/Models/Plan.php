@@ -26,4 +26,10 @@ class Plan extends Model
             ->withTimestamps(); // Optional: Tracks created_at and updated_at
     }
 
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'plan_user', 'plan_id', 'user_id')->withTimestamps();
+    }
+
+
 }
