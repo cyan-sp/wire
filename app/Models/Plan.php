@@ -22,7 +22,7 @@ class Plan extends Model
 
     public function clients()
     {
-        return $this->belongsToMany(Client::class, 'client_plan', 'plan_id', 'client_id')
+        return $this->belongsToMany(Client::class, 'plan_client', 'plan_id', 'client_id')
             ->withTimestamps(); // Optional: Tracks created_at and updated_at
     }
 

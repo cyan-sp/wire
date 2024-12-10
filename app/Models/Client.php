@@ -14,7 +14,7 @@ class Client extends Model
     ];
     public function plans()
     {
-        return $this->belongsToMany(Plan::class, 'client_plan', 'client_id', 'plan_id')
+        return $this->belongsToMany(Plan::class, 'plan_client', 'plan_id', 'client_id')
             ->withTimestamps(); // Optional: Tracks created_at and updated_at
     }
 
