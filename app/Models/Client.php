@@ -28,4 +28,10 @@ class Client extends Model
     {
         return $this->user->name ?? null;
     }
+
+    public function plan()
+    {
+//        return $this->belongsTo(Plan::class, 'plan_id');
+        return $this->belongsToMany(Plan::class, 'plan_client', 'plan_id', 'client_id')->limit(1);
+    }
 }

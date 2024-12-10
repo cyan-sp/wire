@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -19,9 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CompanySeeder::class,
             BrandSeeder::class,
-            PlanSeeder::class, // Add the PlanSeeder
+            PlanSeeder::class,
         ]);
-        // Create the user
+
         // Get the first plan
         $firstPlan = Plan::first();
 
@@ -32,23 +33,33 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('toast'),
         ]);
 
-        // Attach the first plan to the 'cyan' user
         $cyanUser->plans()->attach($firstPlan->id);
 
-        $user = User::factory()->create([
-           'name' => 'clementine',
-           'email' => 'clementine@gmail.com',
-           'password' => Hash::make('toast'),
+        // Create Clementine as a user and client
+        $clementineUser = User::create([
+            'name' => 'clementine',
+            'email' => 'clementine@gmail.com',
+            'password' => Hash::make('toast'),
         ]);
 
-        // Directly create the admin record
+        // Create a Client record and associate it with Clementine
+        $clementineClient = Client::create([
+            'name' => 'Clementine',
+            'email' => 'clementine@gmail.com',
+        ]);
+
+        $clementineUser->userable()->associate($clementineClient);
+        $clementineUser->save();
+
+        // Associate Clementine with the first plan
+        $clementineClient->plans()->attach($firstPlan->id);
+
+        // Directly create an admin record for Clementine if needed
         DB::table('admins')->insert([
-            'id' => $user->id, // Match the user's ID
+            'id' => $clementineUser->id,
             'role' => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-
     }
 }

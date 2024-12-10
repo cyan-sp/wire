@@ -54,7 +54,7 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->tenant(Plan::class) // Set Group as the tenant model
+            ->tenant(Plan::class) 
             ->tenantRegistration(RegisterPlan::class) // Specify the tenant registration page
             ->registration();
     }
