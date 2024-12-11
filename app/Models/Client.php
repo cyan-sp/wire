@@ -14,9 +14,15 @@ class Client extends Model
     ];
     public function plans()
     {
-        return $this->belongsToMany(Plan::class, 'plan_client', 'plan_id', 'client_id')
+        return $this->belongsToMany(Plan::class, 'client_plan', 'client_id', 'plan_id')
             ->withTimestamps(); // Optional: Tracks created_at and updated_at
     }
+
+//     public function plans()
+// {
+//     return $this->belongsToMany(Plan::class, 'plan_client', 'client_id', 'plan_id')
+//         ->withTimestamps(); // Ensure correct foreign key order
+// }
 
     public function user()
     {
@@ -32,6 +38,6 @@ class Client extends Model
     public function plan()
     {
 //        return $this->belongsTo(Plan::class, 'plan_id');
-        return $this->belongsToMany(Plan::class, 'plan_client', 'plan_id', 'client_id')->limit(1);
+        return $this->belongsToMany(Plan::class, 'client_plan', 'client_id', 'plan_id')->limit(1);
     }
 }

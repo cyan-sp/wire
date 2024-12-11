@@ -15,51 +15,68 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // Call other seeders
-        $this->call([
-            CompanySeeder::class,
-            BrandSeeder::class,
-            PlanSeeder::class,
-        ]);
+{
+    $this->call([
+        CompanySeeder::class,
+        BrandSeeder::class,
+        PlanSeeder::class,
+        UserSeeder::class,
 
-        // Get the first plan
-        $firstPlan = Plan::first();
+    ]);
 
-        // Create the user 'cyan' and attach the first plan
-        $cyanUser = User::factory()->create([
-            'name' => 'cyan',
-            'email' => 'cyan.mv@gmail.com',
-            'password' => Hash::make('toast'),
-        ]);
+    // $firstPlan = Plan::first();
 
-        $cyanUser->plans()->attach($firstPlan->id);
+    // if (!$firstPlan) {
+    //     dd('No plans exist in the database. Check your PlanSeeder.');
+    // }
 
-        // Create Clementine as a user and client
-        $clementineUser = User::create([
-            'name' => 'clementine',
-            'email' => 'clementine@gmail.com',
-            'password' => Hash::make('toast'),
-        ]);
+    // // Create the user 'cyan' and attach the first plan
+    // $cyanUser = User::factory()->create([
+    //     'name' => 'cyan',
+    //     'email' => 'cyan.mv@gmail.com',
+    //     'password' => Hash::make('toast'),
+    // ]);
+    // dump('Cyan User:', $cyanUser->toArray());
+    // $cyanUser->plans()->attach($firstPlan->id);
 
-        // Create a Client record and associate it with Clementine
-        $clementineClient = Client::create([
-            'name' => 'Clementine',
-            'email' => 'clementine@gmail.com',
-        ]);
+    // // Create Clementine
+    // $clementineUser = User::create([
+    //     'name' => 'clementine',
+    //     'email' => 'clementine@gmail.com',
+    //     'password' => Hash::make('toast'),
+    // ]);
+    // $clementineClient = Client::create([
+    //     'name' => 'Clementine',
+    //     'email' => 'clementine@gmail.com',
+    // ]);
+    // $clementineUser->userable()->associate($clementineClient);
+    // $clementineUser->save();
+    // dump('Clementine Client:', $clementineClient->toArray());
+    // dump('Attaching Plan ID:', $firstPlan->id, 'to Client ID:', $clementineClient->id);
+    // $clementineClient->plans()->attach($firstPlan->id);
 
-        $clementineUser->userable()->associate($clementineClient);
-        $clementineUser->save();
+    // // Create Jenna
+    // $jennaUser = User::create([
+    //     'name' => 'jenna',
+    //     'email' => 'jenna@gmail.com',
+    //     'password' => Hash::make('toast'),
+    // ]);
+    // $jennaClient = Client::create([
+    //     'name' => 'jenna',
+    //     'email' => 'jenna@gmail.com',
+    // ]);
+    // $jennaUser->userable()->associate($jennaClient);
+    // $jennaUser->save();
+    // dump('Jenna Client:', $jennaClient->toArray());
+    // dump('Attaching Plan ID:', $firstPlan->id, 'to Client ID:', $jennaClient->id);
+    // $jennaClient->plans()->attach($firstPlan->id);
 
-        // Associate Clementine with the first plan
-        $clementineClient->plans()->attach($firstPlan->id);
-
-        // Directly create an admin record for Clementine if needed
-        DB::table('admins')->insert([
-            'id' => $clementineUser->id,
-            'role' => 'admin',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
+    // // Add admin for Clementine
+    // DB::table('admins')->insert([
+    //     'id' => $clementineUser->id,
+    //     'role' => 'admin',
+    //     'created_at' => now(),
+    //     'updated_at' => now(),
+    // ]);
+}
 }
