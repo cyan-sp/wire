@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
                 'client' => [
                     'name' => 'marina', // Explicitly set
                     'email' => 'marina@gmail.com', // Explicitly set
-                    'plans' => [2], // Attach the first plan
+                    'plans' => [1, 2], // Attach the first plan
                 ],
             ],
         ];

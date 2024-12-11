@@ -37,25 +37,32 @@ class ClientResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('plans_count')->counts('plans')->label('Plans Count'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('name')
+                ->label('Name')
+                ->searchable()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('email')
+                ->label('Email')
+                ->searchable()
+                ->sortable(),
+            Tables\Columns\TagsColumn::make('plans.name') // Use a tags column for better formatting
+                ->label('Plans')
+                ->separator(', ') // Optional: Define a separator for the tags
+                ->getStateUsing(function ($record) {
+                    return $record->plans->pluck('name')->toArray(); // Fetch and display plan names as tags
+                }),
+        ])
+        ->filters([])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
+}
 
     public static function getRelations(): array
     {
