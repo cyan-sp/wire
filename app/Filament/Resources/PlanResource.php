@@ -26,7 +26,7 @@ class PlanResource extends Resource
                 Forms\Components\TextInput::make('code')
                     ->required()
                     ->maxLength(3),
-                Forms\Components\TextInput::make('description')
+                Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('prefix')
                     ->required()
@@ -54,7 +54,7 @@ class PlanResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('description')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('prefix'),
                 Tables\Columns\ToggleColumn::make('status'),
                 Tables\Columns\TextColumn::make('consecutive_length'),

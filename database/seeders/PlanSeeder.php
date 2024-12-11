@@ -22,5 +22,15 @@ class PlanSeeder extends Seeder
             'image' => 'KFC-logo.webp',
             'current_sequence' => 0, // Default value for sequence
         ]);
+         Plan::create([
+            'code' => '999',
+            'name' => 'Silver Group',
+            'prefix' => '333',
+            'status' => true,
+            'consecutive_length' => 5,
+            'color' => '#FF5733',
+            'image' => 'KFC-logo.webp',
+            'current_sequence' => 0, // Default value for sequence
+        ]);
     }
 }

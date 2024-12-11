@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                     'role' => 'admin', // Role for the admin
                 ],
                 'client' => null, // No client relationship for this user
-                'plans' => [1], // Attach the first plan
+                'plans' => [1, 2], // Attach the first plan
             ],
             [
                 'name' => 'clementine',
@@ -46,6 +46,16 @@ class UserSeeder extends Seeder
                     'name' => 'jenna', // Explicitly set
                     'email' => 'jenna@gmail.com', // Explicitly set
                     'plans' => [1], // Attach the first plan
+                ],
+            ],
+            [
+                'name' => 'marina',
+                'email' => 'marina@gmail.com',
+                'password' => Hash::make('toast'),
+                'client' => [
+                    'name' => 'marina', // Explicitly set
+                    'email' => 'marina@gmail.com', // Explicitly set
+                    'plans' => [2], // Attach the first plan
                 ],
             ],
         ];
