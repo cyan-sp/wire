@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BrandResource\Pages;
-//use App\Filament\Resources\BrandResource\RelationManagers;
 use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BrandResource extends Resource
 {
@@ -26,11 +23,15 @@ class BrandResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('company_id')
-                    ->relationship('company', 'company_name') // Assumes Company has a `company_name` field
-                    ->searchable()
-                    ->nullable()
-                    ->required(),
+                // Forms\Components\Select::make('company_id')
+                //     ->relationship('company', 'company_name') // Assumes Company has a `company_name` field
+                //     ->searchable()
+                //     ->nullable()
+                //     ->required(),
+                Forms\Components\FileUpload::make('logo')
+                    ->directory('brand-logos')
+                    ->image()
+                    ->label('Logo'),
             ]);
     }
 
@@ -39,7 +40,10 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('company.company_name')->label('Company')->sortable()->searchable(),
+                // Tables\Columns\TextColumn::make('company.company_name')->label('Company')->sortable()->searchable(),
+                Tables\Columns\ImageColumn::make('logo')
+                    ->label('Logo')
+    
             ])
             ->filters([
                 //

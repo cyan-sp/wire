@@ -15,8 +15,8 @@ class PlanSeeder extends Seeder
     {
         // Create plans
         $plan1 = Plan::create([
-            'code' => '001',
-            'name' => 'YUM Plan',
+            'code' => '222',
+            'name' => 'Hut & Cluck',
             'prefix' => '444',
             'status' => true,
             'consecutive_length' => 5,
@@ -27,8 +27,19 @@ class PlanSeeder extends Seeder
 
         $plan2 = Plan::create([
             'code' => '999',
-            'name' => 'Darden restaurants plan',
+            'name' => 'Taco Plan',
             'prefix' => '333',
+            'status' => true,
+            'consecutive_length' => 5,
+            'color' => '#FF5733',
+            'image' => '',
+            'current_sequence' => 0,
+        ]);
+
+        $plan3 = Plan::create([
+            'code' => '010',
+            'name' => 'Cheesy Joy',
+            'prefix' => '777',
             'status' => true,
             'consecutive_length' => 5,
             'color' => '#FF5733',
@@ -45,6 +56,7 @@ class PlanSeeder extends Seeder
         $brand3 = Brand::find(3);
         $brand3->plans()->attach([$plan2->id]);
 
-
+        $brand4 = Brand::find(4);
+        $brand4->plans()->attach([$plan3->id]);
     }
 }

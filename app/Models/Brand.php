@@ -12,6 +12,7 @@ class Brand extends Model
     protected $fillable = [
         'name',
         'company_id',
+        'logo',
     ];
 
     // Relationship with Company

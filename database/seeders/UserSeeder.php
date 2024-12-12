@@ -29,6 +29,16 @@ class UserSeeder extends Seeder
                 'plans' => [1, 2], // Attach the first plan
             ],
             [
+                'name' => 'mila',
+                'email' => 'mila@gmail.com',
+                'password' => Hash::make('toast'),
+                'admin' => [
+                    'role' => 'admin', // Role for the admin
+                ],
+                'client' => null, // No client relationship for this user
+                'plans' => [3], // Attach the first plan
+            ],
+            [
                 'name' => 'clementine',
                 'email' => 'clementine@gmail.com',
                 'password' => Hash::make('toast'),
