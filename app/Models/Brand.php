@@ -19,4 +19,15 @@ class Brand extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function plan()
+    {
+//        return $this->belongsTo(Plan::class, 'plan_id');
+        return $this->belongsToMany(Plan::class, 'brand_plan', 'brand_id', 'plan_id')->limit(1);
+    }
+
+    // Relationship with Plans
+    public function plans()
+    {
+        return $this->belongsToMany(Plan::class, 'brand_plan', 'brand_id', 'plan_id')->withTimestamps();
+    }
 }

@@ -14,7 +14,15 @@ class BrandSeeder extends Seeder
     {
         Brand::create([
             'name' => 'KFC',
-            'company_id' => 1, // Adjust to a valid company ID
+//            'company_id' => 1, // Adjust to a valid company ID
+        ]);
+        Brand::create([
+            'name' => 'Pizza hut',
+//            'company_id' => 2, // Adjust to a valid company ID
+        ]);
+        Brand::create([
+            'name' => ' Olive Garden',
+//            'company_id' => 3, // Adjust to a valid company ID
         ]);
     }
 }

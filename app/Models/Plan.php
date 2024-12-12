@@ -31,5 +31,9 @@ class Plan extends Model
         return $this->belongsToMany(User::class, 'plan_user', 'plan_id', 'user_id')->withTimestamps();
     }
 
-
+    // Relationship with Brands
+    public function brands()
+    {
+        return $this->belongsToMany(Brand::class, 'brand_plan', 'plan_id', 'brand_id')->withTimestamps();
+    }
 }

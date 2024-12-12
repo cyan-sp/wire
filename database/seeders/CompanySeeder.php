@@ -28,6 +28,23 @@ class CompanySeeder extends Seeder
             'logo' => 'https://s3-symbol-logo.tradingview.com/yum-brands--600.png',
             // Leave team_id out for now
         ]);
+
+        Company::create([
+            'company_name' => 'Darden Restaurants',
+            'legal_name' => 'Darden Restaurants, Inc.',
+            'tax_id' => 'TAX-9876543',
+            'phone' => '407-245-4000',
+            'address' => '1000 Darden Center Drive, Orlando, FL 32837',
+            'email' => 'info@darden.com',
+            'website' => 'https://www.darden.com',
+            'city' => 'Orlando',
+            'state' => 'Florida',
+            'country' => 'USA',
+            'status' => true,
+            'logo' => 'https://s3-symbol-logo.tradingview.com/darden-restaurants--600.png',
+            // Leave team_id out for now
+        ]);
+
         //
     }
 }
