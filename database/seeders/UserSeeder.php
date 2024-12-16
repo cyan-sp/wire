@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\Client;
-use App\Models\Admin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,46 +15,45 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Define users and their relationships
         $users = [
             [
                 'name' => 'cyan',
                 'email' => 'cyan.mv@gmail.com',
                 'password' => Hash::make('toast'),
                 'admin' => [
-                    'role' => 'admin', // Role for the admin
+                    'role' => 'admin',
                 ],
-                'client' => null, // No client relationship for this user
-                'plans' => [1, 2], // Attach the first plan
+                'client' => null,
+                'plans' => [1, 2],
             ],
             [
                 'name' => 'mila',
                 'email' => 'mila@gmail.com',
                 'password' => Hash::make('toast'),
                 'admin' => [
-                    'role' => 'admin', // Role for the admin
+                    'role' => 'admin',
                 ],
-                'client' => null, // No client relationship for this user
-                'plans' => [3], // Attach the first plan
+                'client' => null,
+                'plans' => [3],
             ],
             [
                 'name' => 'clementine',
                 'email' => 'clementine@gmail.com',
                 'password' => Hash::make('toast'),
                 'client' => [
-                    'name' => 'Clementine', // Explicitly set
-                    'email' => 'clementine@gmail.com', // Explicitly set
-                    'plans' => [1], // Attach the first plan
+                    'name' => 'Clementine',
+                    'email' => 'clementine@gmail.com',
+                    'plans' => [1],
                 ],
             ],
             [
                 'name' => 'jenna',
-                'email' => 'jennta@gmail.com',
+                'email' => 'jenna@gmail.com',
                 'password' => Hash::make('toast'),
                 'client' => [
-                    'name' => 'jenna', // Explicitly set
-                    'email' => 'jenna@gmail.com', // Explicitly set
-                    'plans' => [1], // Attach the first plan
+                    'name' => 'jenna',
+                    'email' => 'jenna@gmail.com',
+                    'plans' => [1],
                 ],
             ],
             [
@@ -63,25 +61,21 @@ class UserSeeder extends Seeder
                 'email' => 'marina@gmail.com',
                 'password' => Hash::make('toast'),
                 'client' => [
-                    'name' => 'marina', // Explicitly set
-                    'email' => 'marina@gmail.com', // Explicitly set
-                    'plans' => [1, 2], // Attach the first plan
+                    'name' => 'marina',
+                    'email' => 'marina@gmail.com',
+                    'plans' => [1, 2],
                 ],
             ],
         ];
 
         foreach ($users as $userData) {
-            // Extract and unset admin, client, and plans data before creating the user
             $adminData = $userData['admin'] ?? null;
             $clientData = $userData['client'] ?? null;
             $userPlans = $userData['plans'] ?? [];
             unset($userData['admin'], $userData['client'], $userData['plans']);
 
-            // Create the user
             $user = User::create($userData);
-//            dump("User created: ", $user->toArray());
 
-            // Handle the client relationship
             if ($clientData) {
                 $clientPlans = $clientData['plans'] ?? [];
                 unset($clientData['plans']);
@@ -90,22 +84,31 @@ class UserSeeder extends Seeder
                 $clientData['email'] = $clientData['email'] ?? $userData['email'];
 
                 $client = Client::create($clientData);
-//                dump("Client created: ", $client->toArray());
-
                 $user->userable()->associate($client);
                 $user->save();
 
-                // Attach plans to the client
                 if (!empty($clientPlans)) {
-//                    dump("Attaching plans to client: ", $clientPlans);
-                    $client->plans()->sync($clientPlans);
+                    foreach ($clientPlans as $planId) {
+                        $plan = Plan::find($planId);
+
+                        // Generate numbering
+                        $sequence = str_pad($plan->current_sequence + 1, $plan->consecutive_length, '0', STR_PAD_LEFT);
+                        $numbering = "{$plan->code}{$plan->prefix}{$sequence}";
+
+                        // Attach with numbering
+                        $client->plans()->attach($planId, ['numbering' => $numbering]);
+
+                        // Increment the plan's sequence
+                        $plan->current_sequence += 1;
+                        $plan->save();
+                    }
                 }
             }
 
-            // Attach plans to the user
             if (!empty($userPlans)) {
-//                dump("Attaching plans to user: ", $userPlans);
-                $user->plans()->sync($userPlans);
+                foreach ($userPlans as $planId) {
+                    $user->plans()->attach($planId);
+                }
             }
         }
     }

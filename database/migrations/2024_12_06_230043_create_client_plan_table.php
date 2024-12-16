@@ -12,6 +12,7 @@ class CreateClientPlanTable extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+            $table->string('numbering')->unique();
             $table->timestamps(); // Optional: Enable if you want `withTimestamps`
         });
     }
