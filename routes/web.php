@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\HomeController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -19,6 +21,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/api/available-plans', [HomeController::class, 'getAvailablePlans']);
+    Route::get('/api/my-plans', [HomeController::class, 'getMyPlans']);
+    Route::post('/api/associate-plan', [HomeController::class, 'associatePlan']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
