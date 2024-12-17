@@ -3,7 +3,6 @@
 namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\BrandResource\Pages;
-//use App\Filament\App\Resources\BrandResource\RelationManagers;
 use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,8 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BrandResource extends Resource
 {
@@ -30,12 +27,7 @@ class BrandResource extends Resource
                         ->required()
                         ->placeholder('Enter brand name')
                         ->maxLength(255),
-//                    Forms\Components\Select::make('company_id')
-//                        ->label('Company')
-//                        ->relationship('company', 'company_name') // Assuming the `company_name` field exists
-//                        ->searchable()
-//                        ->placeholder('Select a company'),
-                ])->columns(2), // Adjust the number of columns in the card layout
+                ])->columns(2),
             ]);
     }
 
@@ -44,26 +36,38 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\TextColumn::make('name')
-                        ->weight(FontWeight::Bold)
-                        ->color('primary')
-                        ->size('lg'), // Adjust size for better emphasis
-                    Tables\Columns\TextColumn::make('company.company_name')
-                        ->label('Company')
-                        ->color('gray')
-                        ->limit(30),
+                    Tables\Columns\ImageColumn::make('logo')
+                        ->label('Logo')
+                        ->height('100px')
+                        ->width('100px')
+                        ->rounded(),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('name')
+                            ->label('Brand Name')
+                            ->weight(FontWeight::Bold)
+                            ->color('primary'),
+                        Tables\Columns\TextColumn::make('company.company_name')
+                            ->label('Company')
+                            ->color('gray')
+                            ->limit(30),
+                    ]),
                 ])->space(3),
             ])
             ->contentGrid([
-                'md' => 2,
-                'lg' => 3, // Number of cards per row on larger screens
+                'md' => 2, // 2 cards per row on medium screens
+                'lg' => 3, // 3 cards per row on large screens
+                'xl' => 4, // 4 cards per row on extra-large screens
             ])
-            ->filters([
-                //
+            ->paginated([
+                12, 24, 48, 'all', // Pagination options
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+            // ->actions([
+            //     Tables\Actions\Action::make('view')
+            //         ->label('View Brand')
+            //         ->icon('heroicon-m-eye')
+            //         ->url(fn (Brand $record): string => route('brands.view', ['brand' => $record->id])),
+            //     Tables\Actions\EditAction::make(),
+            // ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -73,9 +77,7 @@ class BrandResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -87,3 +89,4 @@ class BrandResource extends Resource
         ];
     }
 }
+
