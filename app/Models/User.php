@@ -14,8 +14,9 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser, HasTenants
 {
-    public string $userable_type;
-    public int $userable_id;
+     // Initialize properties
+    // public $userable_type = null;
+    // public $userable_id = null;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
