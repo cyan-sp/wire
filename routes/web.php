@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/available-plans', [HomeController::class, 'getAvailablePlans']);
     Route::get('/api/my-plans', [HomeController::class, 'getMyPlans']);
     Route::post('/api/associate-plan', [HomeController::class, 'associatePlan']);
+    Route::get('/api/brands', [HomeController::class, 'getBrands']);
+    Route::get('/api/brands/{brandId}/plans', [HomeController::class, 'getBrandPlans']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

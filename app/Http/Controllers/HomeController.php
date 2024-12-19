@@ -8,6 +8,26 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+
+    public function getBrands()
+    {
+        $brands = DB::table('brands')
+            ->select('brands.*')
+            ->get();
+
+        return response()->json($brands);
+    }
+
+    public function getBrandPlans($brandId)
+    {
+        $plans = DB::table('plans')
+            ->join('brand_plan', 'plans.id', '=', 'brand_plan.plan_id')
+            ->where('brand_plan.brand_id', $brandId)
+            ->select('plans.*')
+            ->get();
+
+        return response()->json($plans);
+    }
     /**
      * Fetch all plans not associated with the user.
      */
