@@ -10,6 +10,17 @@ interface Plan {
     numbering?: string;
 }
 
+// Update Plan interface
+interface Plan {
+    id: number;
+    name: string;
+    code: string;
+    prefix: string;
+    numbering?: string;
+    coupons?: Coupon[];
+    coupon_count?: number;
+}
+
 interface Brand {
     id: number;
     name: string;
@@ -18,6 +29,18 @@ interface Brand {
 
 interface AvailablePlan extends Plan {
     isJoined?: boolean;
+}
+
+interface Coupon {
+    id: number;
+    code: string;
+    type: string;
+    name: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    redeem_at: string;
+    image: string;
 }
 
 export default function Dashboard() {
@@ -31,6 +54,9 @@ export default function Dashboard() {
         myPlans: false,
     });
     const [error, setError] = useState<string | null>(null);
+    const [selectedPlanForCoupons, setSelectedPlanForCoupons] = useState<
+        number | null
+    >(null);
 
     // Initial data fetch
     useEffect(() => {
@@ -192,14 +218,97 @@ export default function Dashboard() {
                                             className="card bg-base-100 shadow-md transition-shadow hover:shadow-lg"
                                         >
                                             <div className="card-body">
-                                                <h4 className="card-title">
-                                                    {plan.name}
-                                                </h4>
+                                                <div className="flex items-start justify-between">
+                                                    <h4 className="card-title">
+                                                        {plan.name}
+                                                    </h4>
+                                                    {plan.coupon_count > 0 && (
+                                                        <span className="badge badge-secondary">
+                                                            {plan.coupon_count}{' '}
+                                                            Coupons
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p>Code: {plan.code}</p>
                                                 <p>Prefix: {plan.prefix}</p>
                                                 <p>
                                                     Numbering: {plan.numbering}
                                                 </p>
+
+                                                {/* Coupons Section */}
+                                                <div className="mt-4">
+                                                    <button
+                                                        onClick={() =>
+                                                            setSelectedPlanForCoupons(
+                                                                selectedPlanForCoupons ===
+                                                                    plan.id
+                                                                    ? null
+                                                                    : plan.id,
+                                                            )
+                                                        }
+                                                        className="btn btn-outline btn-sm w-full"
+                                                    >
+                                                        {selectedPlanForCoupons ===
+                                                        plan.id
+                                                            ? 'Hide Coupons'
+                                                            : 'View Coupons'}
+                                                    </button>
+
+                                                    {selectedPlanForCoupons ===
+                                                        plan.id &&
+                                                        plan.coupons && (
+                                                            <div className="mt-4 space-y-3">
+                                                                {plan.coupons.map(
+                                                                    (
+                                                                        coupon,
+                                                                    ) => (
+                                                                        <div
+                                                                            key={
+                                                                                coupon.id
+                                                                            }
+                                                                            className="rounded-lg bg-base-200 p-4"
+                                                                        >
+                                                                            <div className="flex items-start justify-between">
+                                                                                <div>
+                                                                                    <span className="font-bold text-primary">
+                                                                                        {
+                                                                                            coupon.name
+                                                                                        }
+                                                                                    </span>
+                                                                                    <p className="mt-1 text-sm">
+                                                                                        {
+                                                                                            coupon.description
+                                                                                        }
+                                                                                    </p>
+                                                                                </div>
+                                                                                <span className="rounded bg-primary/10 px-2 py-1 text-xs text-primary">
+                                                                                    {
+                                                                                        coupon.code
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className="mt-2 text-xs text-gray-500">
+                                                                                <p>
+                                                                                    Valid
+                                                                                    until:{' '}
+                                                                                    {new Date(
+                                                                                        coupon.end_date,
+                                                                                    ).toLocaleDateString()}
+                                                                                </p>
+                                                                                <p>
+                                                                                    Redeem
+                                                                                    at:{' '}
+                                                                                    {
+                                                                                        coupon.redeem_at
+                                                                                    }
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    ),
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                </div>
                                             </div>
                                         </div>
                                     ))

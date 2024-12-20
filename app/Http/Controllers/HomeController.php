@@ -70,23 +70,50 @@ public function getAvailablePlans()
  * Fetch plans associated with the user.
  */
     public function getMyPlans()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        if ($user && $user->userable_type === 'App\Models\Client') {
-            $client = \App\Models\Client::find($user->userable_id);
+    if ($user && $user->userable_type === 'App\Models\Client') {
+        $clientId = $user->userable_id;
 
-            if ($client) {
-                $myPlans = $client->plans()
-                    ->select('plans.*', 'client_plan.numbering')
-                    ->get();
+        $myPlans = DB::table('plans')
+            ->join('client_plan', 'plans.id', '=', 'client_plan.plan_id')
+            ->where('client_plan.client_id', $clientId)
+            ->leftJoin('coupon_plan', 'plans.id', '=', 'coupon_plan.plan_id')
+            ->leftJoin('coupons', 'coupon_plan.coupon_id', '=', 'coupons.id')
+            ->select(
+                'plans.*',
+                'client_plan.numbering',
+                DB::raw('COUNT(DISTINCT coupons.id) as coupon_count'),
+                DB::raw('JSON_ARRAYAGG(
+                    IF(coupons.id IS NOT NULL,
+                        JSON_OBJECT(
+                            "id", coupons.id,
+                            "code", coupons.code,
+                            "name", coupons.name,
+                            "description", coupons.description,
+                            "redeem_at", coupons.redeem_at,
+                            "end_date", coupons.end_date,
+                            "type", coupons.type
+                        ),
+                        NULL
+                    )
+                ) as coupons')
+            )
+            ->groupBy('plans.id', 'client_plan.numbering')
+            ->get()
+            ->map(function ($plan) {
+                $coupons = json_decode($plan->coupons);
+                // Filter out null values and ensure it's an array
+                $plan->coupons = array_values(array_filter($coupons ?: []));
+                return $plan;
+            });
 
-                return response()->json($myPlans);
-            }
-        }
-
-        return response()->json(['message' => 'Forbidden'], 403);
+        return response()->json($myPlans);
     }
+
+    return response()->json(['message' => 'Forbidden'], 403);
+}
 
     /**
      * Associate a plan with the user.
