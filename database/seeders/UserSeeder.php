@@ -20,9 +20,9 @@ class UserSeeder extends Seeder
                 'name' => 'cyan',
                 'email' => 'cyan.mv@gmail.com',
                 'password' => Hash::make('toast'),
-                'admin' => [
-                    'role' => 'admin',
-                ],
+                // 'admin' => [
+                //     'role' => 'admin',
+                // ],
                 'client' => null,
                 'plans' => [1, 2],
             ],
@@ -30,9 +30,9 @@ class UserSeeder extends Seeder
                 'name' => 'mila',
                 'email' => 'mila@gmail.com',
                 'password' => Hash::make('toast'),
-                'admin' => [
-                    'role' => 'admin',
-                ],
+                // 'admin' => [
+                //     'role' => 'admin',
+                // ],
                 'client' => null,
                 'plans' => [3],
             ],
