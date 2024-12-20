@@ -34,22 +34,34 @@ class HomeController extends Controller
     /**
  * Fetch all plans not associated with the user.
  */
-    public function getAvailablePlans()
-    {
-        $user = Auth::user();
+    /**
+ * Fetch all plans not associated with the user.
+ */
+public function getAvailablePlans()
+{
+    $user = Auth::user();
 
-        if ($user && $user->userable_type === 'App\Models\Client') {
-            $client = \App\Models\Client::find($user->userable_id);
+    if ($user && $user->userable_type === 'App\Models\Client') {
+        $clientId = $user->userable_id;
 
-            $availablePlans = \App\Models\Plan::whereDoesntHave('clients', function ($query) use ($client) {
-                $query->where('client_id', $client->id);
-            })->get();
+        // Get ALL plans with a left join to check association
+        $allPlans = DB::table('plans')
+            ->leftJoin('client_plan', function ($join) use ($clientId) {
+                $join->on('plans.id', '=', 'client_plan.plan_id')
+                    ->where('client_plan.client_id', '=', $clientId);
+            })
+            // Select all plan fields and add a boolean for association
+            ->select(
+                'plans.*',
+                DB::raw('CASE WHEN client_plan.client_id IS NOT NULL THEN true ELSE false END as is_joined')
+            )
+            ->get();
 
-            return response()->json($availablePlans);
-        }
-
-        return response()->json(['message' => 'Forbidden'], 403);
+        return response()->json($allPlans);
     }
+
+    return response()->json(['message' => 'Forbidden'], 403);
+}
 
     /**
      * Fetch plans associated with the user.
