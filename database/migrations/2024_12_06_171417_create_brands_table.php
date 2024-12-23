@@ -18,6 +18,10 @@ return new class extends Migration
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
             $table->string('logo')->nullable();
             $table->timestamps();
+            // $table->foreignId('company_id')
+            //     ->nullable()
+            //     ->constrained()
+            //     ->onDelete('set null');
         });
     }
 

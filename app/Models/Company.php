@@ -25,6 +25,23 @@ class Company extends Model
         'brand_id',
     ];
 
+     public function brands()
+    {
+        return $this->hasMany(Brand::class);
+    }
+
+    // public function managers()
+    // {
+    //     return $this->belongsToMany(User::class, 'user_company')
+    //         ->withPivot('role', 'permissions')
+    //         ->withTimestamps();
+    // }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_company');
+    }
+
+    
     // Relationship with Brand model
 //    public function brand()
 //    {
