@@ -43,7 +43,13 @@ interface Coupon {
     image: string;
 }
 
+interface AlertMessage {
+    type: 'success' | 'error';
+    message: string;
+}
+
 export default function Dashboard() {
+		const [alertMessage, setAlertMessage] = useState<AlertMessage | null>(null);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
     const [availablePlans, setAvailablePlans] = useState<AvailablePlan[]>([]);
@@ -162,33 +168,41 @@ export default function Dashboard() {
     };
 
     const associatePlan = async (planId: number) => {
-        try {
-            const response = await fetch('/api/associate-plan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ planId }),
-            });
+    try {
+        const response = await fetch('/api/associate-plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ planId }),
+        });
 
-            if (response.ok) {
-                await fetchMyPlans(); // Refetch my plans first
-                if (selectedBrand) {
-                    await fetchBrandPlans(selectedBrand);
-                } else {
-                    await fetchAllPlans();
-                }
-                alert('Plan associated successfully!');
+        if (response.ok) {
+            await fetchMyPlans(); // Refetch my plans first
+            if (selectedBrand) {
+                await fetchBrandPlans(selectedBrand);
             } else {
-                const errorData = await response.json();
-                alert(
-                    'Failed to associate plan: ' +
-                        (errorData.message || 'Unknown error'),
-                );
+                await fetchAllPlans();
             }
-        } catch (error) {
-            console.error('Error associating plan:', error);
-            alert('An unexpected error occurred.');
+            setAlertMessage({
+                type: 'success',
+                message: 'Plan associated successfully!'
+            });
+            // Auto-hide alert after 3 seconds
+            setTimeout(() => setAlertMessage(null), 3000);
+        } else {
+            const errorData = await response.json();
+            setAlertMessage({
+                type: 'error',
+                message: 'Failed to associate plan: ' + (errorData.message || 'Unknown error')
+            });
         }
-    };
+    } catch (error) {
+        console.error('Error associating plan:', error);
+        setAlertMessage({
+            type: 'error',
+            message: 'An unexpected error occurred.'
+        });
+    }
+};
 
     return (
         <AuthenticatedLayout>
@@ -196,11 +210,41 @@ export default function Dashboard() {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    {error && (
-                        <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700">
-                            {error}
-                        </div>
+                    {alertMessage && (
+            <div role="alert" className={`alert ${
+                alertMessage.type === 'success' ? 'alert-success' : 'alert-error'
+            } mb-4`}>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                    {alertMessage.type === 'success' ? (
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    ) : (
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                     )}
+                </svg>
+                <span>{alertMessage.message}</span>
+            </div>
+        )}
+
+        {error && (
+            <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700">
+                {error}
+            </div>
+        )}
 
                     {/* My Plans Section */}
                     <div className="p-6">

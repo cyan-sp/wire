@@ -38,8 +38,19 @@ class PlanSeeder extends Seeder
 
         $plan3 = Plan::create([
             'code' => '010',
-            'name' => 'Cheesy Joy',
+            'name' => 'Silver Plan',
             'prefix' => '777',
+            'status' => true,
+            'consecutive_length' => 5,
+            'color' => '#FF5733',
+            'image' => '',
+            'current_sequence' => 0,
+        ]);
+
+        $plan4 = Plan::create([
+            'code' => '643',
+            'name' => 'Golden Plan',
+            'prefix' => '270',
             'status' => true,
             'consecutive_length' => 5,
             'color' => '#FF5733',
@@ -58,5 +69,8 @@ class PlanSeeder extends Seeder
 
         $brand4 = Brand::find(4);
         $brand4->plans()->attach([$plan3->id]);
+        $brand4->plans()->attach([$plan4->id]);
+
+        // $brand4 = Brand::find(4);
     }
 }

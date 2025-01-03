@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
                 //     'role' => 'admin',
                 // ],
                 'client' => null,
-                'plans' => [3],
+                'plans' => [3, 4],
             ],
             [
                 'name' => 'clementine',
@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
                 'client' => [
                     'name' => 'Clementine',
                     'email' => 'clementine@gmail.com',
-                    'plans' => [1],
+                    // 'plans' => [1],
                 ],
             ],
             [
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                 'client' => [
                     'name' => 'jenna',
                     'email' => 'jenna@gmail.com',
-                    'plans' => [1],
+                    'plans' => [3, 4],
                 ],
             ],
             [
@@ -63,7 +63,7 @@ class UserSeeder extends Seeder
                 'client' => [
                     'name' => 'marina',
                     'email' => 'marina@gmail.com',
-                    'plans' => [1, 2],
+                    'plans' => [3, 4],
                 ],
             ],
         ];
