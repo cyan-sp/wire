@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Plan extends Model
 {
@@ -41,5 +42,21 @@ class Plan extends Model
     public function coupons()
     {
         return $this->belongsToMany(Coupon::class, 'coupon_plan', 'coupon_id', 'plan_id')->withTimestamps();
+    }
+
+    public function pools(): BelongsToMany
+    {
+        return $this->belongsToMany(Pool::class, 'pool_plan')
+                    ->withTimestamps();
+    }
+
+    public function createPool(array $poolData)
+    {
+        $pool = Pool::create($poolData);
+
+        // Attach the pool to this plan
+        $this->pools()->attach($pool->id);
+
+        return $pool;
     }
 }

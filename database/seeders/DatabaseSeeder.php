@@ -21,9 +21,11 @@ class DatabaseSeeder extends Seeder
         BrandSeeder::class,
         PlanSeeder::class,
         UserSeeder::class,
-        CouponSeeder::class
+        CouponSeeder::class,
+        PoolSeeder::class
 
     ]);
+
 
     // $firstPlan = Plan::first();
 
