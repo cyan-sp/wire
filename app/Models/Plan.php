@@ -39,9 +39,14 @@ class Plan extends Model
         return $this->belongsToMany(Brand::class, 'brand_plan', 'plan_id', 'brand_id')->withTimestamps();
     }
 
+    // public function coupons()
+    // {
+    //     return $this->belongsToMany(Coupon::class, 'coupon_plan', 'coupon_id', 'plan_id')->withTimestamps();
+    // }
     public function coupons()
     {
-        return $this->belongsToMany(Coupon::class, 'coupon_plan', 'coupon_id', 'plan_id')->withTimestamps();
+        return $this->belongsToMany(Coupon::class, 'coupon_plan', 'plan_id', 'coupon_id')
+            ->withTimestamps();
     }
 
     public function pools(): BelongsToMany

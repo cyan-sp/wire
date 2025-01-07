@@ -20,9 +20,14 @@ class Coupon extends Model
         'image',
     ];
 
-    public function plans()
+    // public function plans()
+    // {
+    //     return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id');
+    // }
+     public function plans()
     {
-        return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id');
+        return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id')
+                    ->withTimestamps();
     }
     
     public function plan()
