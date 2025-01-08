@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Coupon extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'code',
+        'type',
+        'name', // Replacing 'title' with 'name'
+        'description',
+        'start_date',
+        'end_date',
+        'redeem_at',
+        'image',
+    ];
+
+    // public function plans()
+    // {
+    //     return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id');
+    // }
+     public function plans()
+    {
+        return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id')
+                    ->withTimestamps();
+    }
+    
+    public function plan()
+    {
+        //        return $this->belongsTo(Plan::class, 'plan_id');
+        return $this->belongsToMany(Plan::class, 'coupon_plan', 'coupon_id', 'plan_id')->limit(1);
+    }
+    
+    
+        public function plans(): BelongsToMany
+    {
+        return $this->belongsToMany(Plan::class);
+    }
+
+    public function getAvailableCouponsCount(): int
+    {
+        $now = now();
+        
+        return DB::table('pools')
+            ->join('pool_plan', 'pools.id', '=', 'pool_plan.pool_id')
+            ->join('plan_coupon', 'pool_plan.plan_id', '=', 'plan_coupon.plan_id')
+            ->where('plan_coupon.coupon_id', $this->id)
+            ->where('pools.status', 1) // Only active pools
+            ->where('pools.starts_at', '<=', $now)
+            ->where('pools.expires_at', '>=', $now)
+            ->select(DB::raw('SUM(pools.coupon_limit - pools.coupons_used) as available_coupons'))
+            ->first()
+            ->available_coupons ?? 0;
+    }
+
+
+    // public function plan()
+//     {
+// //        return $this->belongsTo(Plan::class, 'plan_id');
+//         return $this->belongsToMany(Plan::class, 'brand_plan', 'brand_id', 'plan_id')->limit(1);
+//     }
+
+//     // Relationship with Plans
+//     public function plans()
+//     {
+//         return $this->belongsToMany(Plan::class, 'brand_plan', 'brand_id', 'plan_id')->withTimestamps();
+//     }
+}

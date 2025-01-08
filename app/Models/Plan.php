@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class Plan extends Model
 {
@@ -63,5 +64,55 @@ class Plan extends Model
         $this->pools()->attach($pool->id);
 
         return $pool;
+    }
+
+    // Existing attributes and relationships...
+
+    /**
+     * Get all active pools for this plan that can still create coupons.
+     * This includes checking dates and coupon limits.
+     */
+    public function getActivePools()
+    {
+        // Add explicit status check and logging
+        $pools = $this->pools()
+            ->where('status', true)  // Make sure this is being applied
+            ->where('starts_at', '<=', now())
+            ->where('expires_at', '>', now())
+            ->where('coupons_used', '<', DB::raw('coupon_limit'))
+            ->get();
+
+        \Log::info('Retrieved active pools for plan', [
+            'plan_id' => $this->id,
+            'plan_name' => $this->name,
+            'pool_count' => $pools->count(),
+            'pools' => $pools->toArray()
+        ]);
+
+        return $pools;
+    }
+
+    public function getAvailableCouponsAttribute(): int
+    {
+        $total = $this->getActivePools()
+            ->sum(function ($pool) {
+                return $pool->coupon_limit - $pool->coupons_used;
+            });
+
+        \Log::info('Calculated total available coupons for plan', [
+            'plan_id' => $this->id,
+            'plan_name' => $this->name,
+            'total_available' => $total
+        ]);
+
+        return $total;
+    }
+
+    /**
+     * Check if this plan can create more coupons.
+     */
+    public function canCreateCoupons(): bool
+    {
+        return $this->available_coupons > 0;
     }
 }

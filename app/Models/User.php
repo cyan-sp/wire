@@ -69,6 +69,14 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->plans;
     }
 
+
+     // This tells Filament which plan is currently selected
+    public function currentTenant(Panel $panel): ?Model
+    {
+        // Return the currently active plan for this user
+        return $this->plans()->first();
+    }
+
     public function canAccessTenant(Model $tenant): bool
     {
         return $this->plans->contains($tenant);

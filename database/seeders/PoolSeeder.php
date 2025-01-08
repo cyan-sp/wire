@@ -65,7 +65,8 @@ class PoolSeeder extends Seeder
             $futurePool = Pool::create([
                 'coupon_limit' => 200,
                 'coupons_used' => 0,
-                'starts_at' => Carbon::now()->addMonth(),
+                // 'starts_at' => Carbon::now()->addMonth(),
+                'starts_at' => Carbon::now(),
                 'expires_at' => Carbon::now()->addMonths(7),
                 'status' => true
             ]);

@@ -71,8 +71,6 @@ class CouponResource extends Resource
             ]);
     }
 
-    // App/Filament/App/Resources/CouponResource.php
-
     public static function table(Table $table): Table
     {
         return $table
@@ -85,14 +83,6 @@ class CouponResource extends Resource
                         'primary' => 'promo',
                     ]),
                 Tables\Columns\TextColumn::make('name')->label('Name')->sortable(),
-                Tables\Columns\BadgeColumn::make('available_coupons')
-                    ->label('Available')
-                    ->colors([
-                        'danger' => fn ($state): bool => $state === 0,
-                        'warning' => fn ($state): bool => $state < 10,
-                        'success' => fn ($state): bool => $state >= 10,
-                    ])
-                    ->formatStateUsing(fn ($state): string => number_format($state)),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Start Date')
                     ->date()
@@ -101,8 +91,17 @@ class CouponResource extends Resource
                     ->label('End Date')
                     ->date()
                     ->sortable(),
+
+                // Display associated plans
                 Tables\Columns\TagsColumn::make('plans.name')
                     ->label('Plans'),
+            ])
+            ->filters([])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
