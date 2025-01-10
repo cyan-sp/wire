@@ -53,7 +53,7 @@ class Plan extends Model
     public function pools(): BelongsToMany
     {
         return $this->belongsToMany(Pool::class, 'pool_plan')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function createPool(array $poolData)
@@ -114,5 +114,37 @@ class Plan extends Model
     public function canCreateCoupons(): bool
     {
         return $this->available_coupons > 0;
+    }
+
+    // ... existing code ...
+
+    public function stacks(): BelongsToMany
+    {
+        return $this->belongsToMany(Stack::class, 'stack_plan')
+            ->withTimestamps();
+    }
+
+    // Get all stacks that can still issue cards
+    public function getActiveStacks()
+    {
+        return $this->stacks()
+            ->where('status', true)
+            ->where('cards_used', '<', DB::raw('card_limit'))
+            ->get();
+    }
+
+    // Calculate total available cards across all stacks
+    public function getAvailableCardsAttribute(): int
+    {
+        return $this->getActiveStacks()
+            ->sum(function ($stack) {
+                return $stack->card_limit - $stack->cards_used;
+            });
+    }
+
+    // Check if this plan can issue more cards
+    public function canIssueCards(): bool
+    {
+        return $this->available_cards > 0;
     }
 }

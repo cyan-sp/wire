@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         PlanSeeder::class,
         UserSeeder::class,
         CouponSeeder::class,
-        PoolSeeder::class
+        PoolSeeder::class,
+        StackSeeder::class,
 
     ]);
 
