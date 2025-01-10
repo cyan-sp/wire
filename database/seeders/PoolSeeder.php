@@ -42,10 +42,10 @@ class PoolSeeder extends Seeder
             // Create a fully utilized pool for Hut & Cluck
             $fullyUtilizedPool = Pool::create([
                 'coupon_limit' => 50,
-                'coupons_used' => 50,
+                'coupons_used' => 0,
                 'starts_at' => Carbon::now()->subMonths(2),
                 'expires_at' => Carbon::now()->addMonth(),
-                'status' => false // Automatically set to false since it's fully utilized
+                'status' => true // Automatically set to false since it's fully utilized
             ]);
             
             $hutAndCluckPlan->pools()->attach($fullyUtilizedPool->id);
@@ -54,9 +54,11 @@ class PoolSeeder extends Seeder
             $expiredPool = Pool::create([
                 'coupon_limit' => 75,
                 'coupons_used' => 45,
-                'starts_at' => Carbon::now()->subMonths(6),
-                'expires_at' => Carbon::now()->subMonth(),
-                'status' => false
+                // 'starts_at' => Carbon::now()->subMonths(6),
+                // 'expires_at' => Carbon::now()->subMonth(),
+                'starts_at' => Carbon::now(),
+                'expires_at' => Carbon::now()->addMonths(7),
+                'status' => true
             ]);
             
             $tacoPlan->pools()->attach($expiredPool->id);
