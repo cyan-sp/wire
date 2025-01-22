@@ -32,60 +32,60 @@ class HomeController extends Controller
      * Fetch all plans not associated with the user.
      */
     /**
- * Fetch all plans not associated with the user.
- */
+     * Fetch all plans not associated with the user.
+     */
     /**
- * Fetch all plans not associated with the user.
- */
-public function getAvailablePlans()
-{
-    $user = Auth::user();
+     * Fetch all plans not associated with the user.
+     */
+    public function getAvailablePlans()
+    {
+        $user = Auth::user();
 
-    if ($user && $user->userable_type === 'App\Models\Client') {
-        $clientId = $user->userable_id;
+        if ($user && $user->userable_type === 'App\Models\Client') {
+            $clientId = $user->userable_id;
 
-        // Get ALL plans with a left join to check association
-        $allPlans = DB::table('plans')
-            ->leftJoin('client_plan', function ($join) use ($clientId) {
-                $join->on('plans.id', '=', 'client_plan.plan_id')
-                    ->where('client_plan.client_id', '=', $clientId);
-            })
-            // Select all plan fields and add a boolean for association
-            ->select(
-                'plans.*',
-                DB::raw('CASE WHEN client_plan.client_id IS NOT NULL THEN true ELSE false END as is_joined')
-            )
-            ->get();
+            // Get ALL plans with a left join to check association
+            $allPlans = DB::table('plans')
+                ->leftJoin('client_plan', function ($join) use ($clientId) {
+                    $join->on('plans.id', '=', 'client_plan.plan_id')
+                        ->where('client_plan.client_id', '=', $clientId);
+                })
+                // Select all plan fields and add a boolean for association
+                ->select(
+                    'plans.*',
+                    DB::raw('CASE WHEN client_plan.client_id IS NOT NULL THEN true ELSE false END as is_joined')
+                )
+                ->get();
 
-        return response()->json($allPlans);
+            return response()->json($allPlans);
+        }
+
+        return response()->json(['message' => 'Forbidden'], 403);
     }
-
-    return response()->json(['message' => 'Forbidden'], 403);
-}
 
     /**
      * Fetch plans associated with the user.
      */
     /**
- * Fetch plans associated with the user.
- */
+     * Fetch plans associated with the user.
+     */
     public function getMyPlans()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    if ($user && $user->userable_type === 'App\Models\Client') {
-        $clientId = $user->userable_id;
+        if ($user && $user->userable_type === 'App\Models\Client') {
+            $clientId = $user->userable_id;
 
-        $myPlans = DB::table('plans')
-            ->join('client_plan', 'plans.id', '=', 'client_plan.plan_id')
-            ->where('client_plan.client_id', $clientId)
-            ->leftJoin('coupon_plan', 'plans.id', '=', 'coupon_plan.plan_id')
-            ->leftJoin('coupons', 'coupon_plan.coupon_id', '=', 'coupons.id')
-            ->select(
-                'plans.*',
-                'client_plan.numbering',
-                DB::raw('COUNT(DISTINCT coupons.id) as coupon_count'),
-                DB::raw('JSON_ARRAYAGG(
+            $myPlans = DB::table('plans')
+                ->join('client_plan', 'plans.id', '=', 'client_plan.plan_id')
+                ->where('client_plan.client_id', $clientId)
+                ->leftJoin('coupon_plan', 'plans.id', '=', 'coupon_plan.plan_id')
+                ->leftJoin('coupons', 'coupon_plan.coupon_id', '=', 'coupons.id')
+                ->select(
+                    'plans.*',
+                    'client_plan.numbering',
+                    DB::raw('COUNT(DISTINCT coupons.id) as coupon_count'),
+                    DB::raw('JSON_ARRAYAGG(
                     IF(coupons.id IS NOT NULL,
                         JSON_OBJECT(
                             "id", coupons.id,
@@ -99,28 +99,28 @@ public function getAvailablePlans()
                         NULL
                     )
                 ) as coupons')
-            )
-            ->groupBy('plans.id', 'client_plan.numbering')
-            ->get()
-            ->map(function ($plan) {
-                $coupons = json_decode($plan->coupons);
-                // Filter out null values and ensure it's an array
-                $plan->coupons = array_values(array_filter($coupons ?: []));
-                return $plan;
-            });
+                )
+                ->groupBy('plans.id', 'client_plan.numbering')
+                ->get()
+                ->map(function ($plan) {
+                    $coupons = json_decode($plan->coupons);
+                    // Filter out null values and ensure it's an array
+                    $plan->coupons = array_values(array_filter($coupons ?: []));
+                    return $plan;
+                });
 
-        return response()->json($myPlans);
+            return response()->json($myPlans);
+        }
+
+        return response()->json(['message' => 'Forbidden'], 403);
     }
-
-    return response()->json(['message' => 'Forbidden'], 403);
-}
 
     /**
      * Associate a plan with the user.
      */
     /**
- * Associate a plan with the user.
- */
+     * Associate a plan with the user.
+     */
     public function associatePlan(Request $request)
     {
         $user = Auth::user();
@@ -164,5 +164,35 @@ public function getAvailablePlans()
         }
 
         return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    /**
+     * Fetch all available coupons.
+     */
+    public function getCoupons()
+    {
+        // Get all coupons from the database
+        $coupons = DB::table('coupons')
+            ->select('coupons.*')
+            ->get();
+
+        return response()->json($coupons);
+    }
+
+    /**
+     * Fetch coupons for a specific brand.
+     */
+    public function getBrandCoupons($brandId)
+    {
+        // Get coupons associated with plans that belong to this brand
+        $coupons = DB::table('coupons')
+            ->join('coupon_plan', 'coupons.id', '=', 'coupon_plan.coupon_id')
+            ->join('brand_plan', 'coupon_plan.plan_id', '=', 'brand_plan.plan_id')
+            ->where('brand_plan.brand_id', $brandId)
+            ->select('coupons.*')
+            ->distinct()
+            ->get();
+
+        return response()->json($coupons);
     }
 }

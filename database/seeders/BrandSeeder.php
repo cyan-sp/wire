@@ -33,7 +33,11 @@ class BrandSeeder extends Seeder
             //            'company_id' => 3, // Adjust to a valid company ID
         ]);
 
-
+        Brand::create([
+            'name' => 'Red ribbon Bakes',
+            'logo' => 'https://upload.wikimedia.org/wikipedia/en/5/58/Red_Ribbon_Bakeshop_Logo.webp'
+            //            'company_id' => 3, // Adjust to a valid company ID
+        ]);
 
     }
 }

@@ -71,6 +71,9 @@ class PlanSeeder extends Seeder
         $brand4->plans()->attach([$plan3->id]);
         $brand4->plans()->attach([$plan4->id]);
 
-        // $brand4 = Brand::find(4);
+        $brand5 = Brand::find(5);
+        $brand5->plans()->attach([$plan4->id]);
+
+
     }
 }
